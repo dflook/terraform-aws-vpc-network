@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# mise description="Run tflint"
+
+set -euo pipefail
+
+function validate_module() {
+  local module=$1
+  echo "# Validating module $module"
+  tflint --chdir=$module --config $(realpath .mise/tasks/lint/.tflint.hcl) --init
+  tflint --chdir=$module --config $(realpath .mise/tasks/lint/.tflint.hcl)
+  echo "Module $module validated"
+}
+
+function validate_example() {
+  local module=$1
+  echo "# Validating module $module"
+  tflint --chdir=$module --config $(realpath .mise/tasks/lint/.tflint.hcl) --init
+  tflint --chdir=$module --config $(realpath .mise/tasks/lint/.tflint.hcl) --disable-rule=terraform_required_version --disable-rule=terraform_standard_module_structure
+  echo "Module $module validated"
+}
+
+
+function validate_root() {
+  echo "# Validating root module"
+  tflint --config .mise/tasks/lint/.tflint.hcl --init
+  tflint --config .mise/tasks/lint/.tflint.hcl --disable-rule terraform_unused_required_providers
+  echo "Root module validated"
+}
+
+for module in $(find modules -mindepth 1 -maxdepth 1 -type d); do
+  validate_module $module
+done
+
+for example in $(find examples -mindepth 1 -maxdepth 1 -type d); do
+  validate_example $example
+done
+
+validate_root .

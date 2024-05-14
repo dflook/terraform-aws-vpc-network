@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# mise description="Run terraform test using the oldest supported AWS provider version"
+
+set -eo pipefail
+
+AWS_PROVIDER_OLDEST="4.0.0"
+
+function restore() {
+  for file in $(find . -name "*.bak"); do
+    mv $file $(echo $file | sed 's/.bak//g')
+  done
+}
+
+trap restore EXIT
+
+function set_aws_provider() {
+  # We need to rewrite the aws provider version constraint in every module
+
+  local version=$1
+
+  for file in $(find $path -name "terraform.tf"); do
+    sed -i.bak "s|  version = \".*|  version = \"$version\"|g" $file
+  done
+}
+
+set_aws_provider $AWS_PROVIDER_OLDEST
+
+function test_module() {
+  local module=$1
+  echo "# Testing module $module"
+  rm -rf modules/$module/.terraform*
+  terraform -chdir=modules/$module init
+  terraform -chdir=modules/$module test
+  echo "Module $module tests passed"
+}
+
+function test_root_module() {
+  echo "# Testing root module"
+  rm -rf .terraform*
+  terraform init
+  terraform test
+  echo "Root module tests passed"
+}
+
+if [[ -z "$1" ]]; then
+
+  for module in $(find modules -mindepth 1 -maxdepth 1 -type d -printf "%f\n"); do
+    test_module $module
+  done
+
+  test_root_module
+
+else
+  if [[ "$1" == "root" ]]; then
+    test_root_module
+    exit 0
+  elif [[ "$1" == "module" ]]; then
+    test_module $2
+    exit 0
+  fi
+fi

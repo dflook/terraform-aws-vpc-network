@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# mise description="Format Terraform code"
+
+set -eo pipefail
+
+CHECK=""
+if [[ "$1" == "--check" ]]; then
+   CHECK="-check"
+fi
+
+terraform fmt -recursive $CHECK

@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# mise description="Run terraform tests"
+
+# This script tests all modules and examples in this repository.
+
+set -eo pipefail
+
+function test_module() {
+  local module=$1
+  echo "# Testing module $module"
+  rm -rf modules/$module/.terraform*
+  terraform -chdir=modules/$module init
+  terraform -chdir=modules/$module test
+  echo "Module $module tests passed"
+}
+
+function test_root_module() {
+  echo "# Testing root module"
+  rm -rf .terraform*
+  terraform init
+  terraform test
+  echo "Root module tests passed"
+}
+
+function test_example() {
+  # We need to adjust the module paths in the examples to point to the local modules
+  # and generate a simple terraform test to exercise the example
+
+  local example=$1
+  echo "# Testing example $example"
+
+  rm -rf .example-test/
+  mkdir -p .example-test/tests
+
+  cp -R examples/$example/* .example-test/
+
+  for file in $(find .example-test -type f -name "*.tf"); do
+    # Rewrite the module source path
+    sed -i 's|dflook/vpc-network/aws//|../|g' $file
+    sed -i 's|dflook/vpc-network/aws|../|g' $file
+    # The the version constraint, its not valid for a local modules
+    sed -i 's|  version = "|  # version = "|g' $file
+  done
+
+  cat <<EOF > .example-test/tests/main.tftest.hcl
+provider "aws" {
+  region = "eu-west-2"
+}
+
+run "test_example" {
+  command = apply
+}
+EOF
+
+  terraform -chdir=.example-test init
+  terraform -chdir=.example-test test
+
+  echo "Example $example tests passed"
+}
+
+terraform -version
+
+if [[ -z "$1" ]]; then
+
+  for example in $(find examples -mindepth 1 -maxdepth 1 -type d -printf "%f\n"); do
+    test_example $example
+  done
+
+  for module in $(find modules -mindepth 1 -maxdepth 1 -type d -printf "%f\n"); do
+    test_module $module
+  done
+
+  test_root_module
+
+else
+  if [[ "$1" == "example" ]]; then
+    test_example $2
+    exit 0
+  elif [[ "$1" == "root" ]]; then
+    test_root_module
+    exit 0
+  elif [[ "$1" == "module" ]]; then
+    test_module $2
+    exit 0
+  fi
+fi

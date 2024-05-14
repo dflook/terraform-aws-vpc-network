@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# mise description="Validate Terraform modules
+
+set -euo pipefail
+
+function validate_module() {
+  local module=$1
+  echo "# Validating module $module"
+  rm -rf modules/$module/.terraform*
+  terraform -chdir=modules/$module init -backend=false
+  terraform -chdir=modules/$module validate
+  echo "Module $module validated"
+}
+
+function validate_root() {
+  echo "# Validating root module"
+  rm -rf .terraform*
+  terraform init -backend=false
+  terraform validate
+  echo "Root module validated"
+}
+
+for module in $(find modules -mindepth 1 -maxdepth 1 -type d -printf "%f\n"); do
+  validate_module $module
+done
+
+validate_root

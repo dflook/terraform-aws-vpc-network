@@ -1,0 +1,17 @@
+[env]
+CHECKPOINT_DISABLE = "disable"
+
+[tools]
+terraform = ["1.8.1", "1.3.2"]
+tflint = "latest"
+shellcheck = "latest"
+markdownlint-cli2 = "latest"
+terraform-docs = "latest"
+
+[tasks.generate]
+depends = ["generate:*"]
+description = "Run generate tasks"
+
+[tasks.lint]
+depends = ["lint:*"]
+description = "Run linting tasks"

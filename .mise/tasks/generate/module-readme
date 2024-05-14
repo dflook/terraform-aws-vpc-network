@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# mise description="Generate README.md files for Terraform modules"
+
+set -eo pipefail
+
+CHECK=""
+if [[ "$1" == "--check" ]]; then
+   CHECK="--output-check"
+fi
+
+terraform-docs markdown document . --output-file README.md $CHECK --hide-empty --hide modules --hide data-sources --hide providers --lockfile=false --anchor=false --sort=false
+
+for module in $(find modules -mindepth 1 -maxdepth 1 -type d); do
+  terraform-docs markdown document $module --output-file README.md $CHECK --hide-empty --hide modules --hide data-sources --hide providers --lockfile=false --anchor=false --sort=false
+done

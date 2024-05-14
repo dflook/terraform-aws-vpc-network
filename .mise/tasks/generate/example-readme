@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+# mise description="Insert examples into README.md files"
+
+import re
+import sys
+from pathlib import Path
+from typing import Iterable
+
+
+def example(example_dir: Path, example_file: Path) -> Iterable[str]:
+    yield f'<!-- begin example {example_file} -->'
+    yield '```hcl'
+    yield from Path(example_dir/example_file).read_text().splitlines()
+    yield '```'
+    yield '<!-- end example -->'
+
+def insert_examples(example_path: Path, readme: str) -> Iterable[str]:
+    in_example = False
+
+    for line in readme.splitlines():
+        if in_example:
+            if line == '<!-- end example -->':
+                in_example = False
+            continue
+
+        if match := re.match(r'<!-- example (.*?)\s*-->', line):
+            yield from example(example_path, match.group(1))
+            continue
+
+        if match := re.match(r'<!-- begin example (.*?)\s*-->', line):
+            yield from example(example_path, match.group(1))
+            in_example = True
+            continue
+
+        yield line
+
+    if in_example:
+        raise ValueError('Unclosed example block')
+
+    yield ''
+
+def main(check: bool = False):
+    for example in Path('examples').iterdir():
+        print(example)
+
+        if not example.is_dir():
+            continue
+
+        existing = Path(example/'README.md').read_text()
+        updated = '\n'.join(insert_examples(example, existing))
+
+        if existing != updated:
+            if check:
+                print('Changes detected')
+                sys.exit(1)
+            else:
+                Path(example/'README.md').write_text(updated)
+
+if __name__ == '__main__':
+    main('--check' in sys.argv)

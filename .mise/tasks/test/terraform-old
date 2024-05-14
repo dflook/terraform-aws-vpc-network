@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# mise description="Run terraform tests using the oldest supported version of terraform."
+
+# This can't use the `terraform test` command as it only exists in it's final form in 1.6.0
+
+set -eo pipefail
+
+function test_root_module() {
+  echo "# Testing root module"
+  rm -rf .terraform*
+  terraform init
+  terraform apply -auto-approve -var 'availability_zones=["a"]'
+  echo "Root module tests passed"
+}
+
+function teardown() {
+  echo "# Tearing down test"
+  terraform destroy -auto-approve -var 'availability_zones=["a"]'
+  echo "# Complete"
+}
+
+terraform -version
+
+trap teardown EXIT
+
+test_root_module
