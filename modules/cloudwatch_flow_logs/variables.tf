@@ -1,8 +1,18 @@
-variable "flow_log_name" {
+variable "name" {
   description = "The name of the flow log. It will be prefixed with the VPC name."
 
   type    = string
   default = "flow-log"
+
+  validation {
+    condition     = length(var.name) >= 1
+    error_message = "Name must not be empty."
+  }
+
+  validation {
+    condition     = length(var.name) <= 120
+    error_message = "Name must not be longer than 120 characters."
+  }
 }
 
 variable "retention_in_days" {
@@ -71,7 +81,7 @@ locals {
   tags = merge(
     var.tags,
     {
-      TerraformModule = "dflook/vpc-network/aws//modules/cloudwatch-flow-logs"
+      TerraformModule = "dflook/vpc-network/aws//modules/cloudwatch_flow_logs"
     }
   )
 }

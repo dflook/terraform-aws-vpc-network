@@ -54,7 +54,7 @@ object({
 
 The following input variables are optional (have default values):
 
-### flow\_log\_name
+### name
 
 Description: The name of the flow log. It will be prefixed with the VPC name.
 

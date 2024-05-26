@@ -1,6 +1,6 @@
 # Nat Gateway Submodule Example
 
-This example creates a VPC with a public subnet and a NAT gateway in the public subnet.
+This example creates a VPC with a public and private subnets in each of three availability zones, and a NAT Gateway in each public subnet.
 
 <!-- begin example main.tf -->
 ```hcl

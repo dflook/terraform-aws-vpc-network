@@ -96,10 +96,6 @@ Example:
   {
     id                     = "subnet-12345678"
     availability_zone      = "a"
-    availability_zone_id   = "usw2-az1"
-    availability_zone_name = "us-west-2a"
-    cidr_block             = "10.145.0.0/16"
-    network_acl_id         = "acl-12345678"
     route_table_id         = "rtb-12345678"
     name                   = "subnet-a"
   }

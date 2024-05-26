@@ -101,7 +101,7 @@ Description: A list of AWS services to create AWS VPC Interface Endpoints for.
 The full list of available aws services can be found at:  
 https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html
 
-Example: ["ec2", "sns"]
+Example: `["ec2", "sns"]`
 
 Type: `set(string)`
 

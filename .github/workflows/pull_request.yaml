@@ -1,0 +1,37 @@
+name: Pull Request
+
+on: [pull_request]
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: eu-west-2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          curl https://mise.run | sh
+          ~/.local/bin/mise install
+
+      - name: Fetch credentials
+        uses: dflook/configure-oidc-aws-credentials@v1
+        with:
+          role-arn: ${{ secrets.ROLE_ARN }}
+          export-variables: true
+          duration-seconds: 18000
+
+      - name: Test
+        run: |
+          mise task run test:terraform
+
+      - name: Test with Old Terraform
+        run: |
+          mise task run --tool terraform@1.3.2 test:terraform-old
+
+      - name: Test with Old Provider
+        run: |
+          mise task run test:terraform-old-provider

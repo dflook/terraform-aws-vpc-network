@@ -82,7 +82,7 @@ locals {
   tags = merge(
     var.tags,
     {
-      TerraformModule = "dflook/vpc-network/aws//modules/internet-gateway"
+      TerraformModule = "dflook/vpc-network/aws//modules/internet_gateway"
     }
   )
 }

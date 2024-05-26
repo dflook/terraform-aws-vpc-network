@@ -1,3 +1,7 @@
+[settings]
+jobs = 1
+experimental = true
+
 [env]
 CHECKPOINT_DISABLE = "disable"
 
@@ -8,10 +12,6 @@ shellcheck = "latest"
 markdownlint-cli2 = "latest"
 terraform-docs = "latest"
 
-[tasks.generate]
-depends = ["generate:*"]
-description = "Run generate tasks"
-
-[tasks.lint]
-depends = ["lint:*"]
-description = "Run linting tasks"
+[tasks.pre-commit]
+depends = ["fmt:terraform", "generate:module-readme", "generate:example-readme", "lint:tflint", "lint:terraform-validate"]
+description = "Run pre-commit tasks"

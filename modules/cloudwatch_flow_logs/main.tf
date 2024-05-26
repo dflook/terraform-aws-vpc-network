@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "flow_logs" {
-  name = "${var.vpc.name}-${var.flow_log_name}"
+  name = "${var.vpc.name}-${var.name}"
 
   retention_in_days = var.retention_in_days
 
@@ -12,7 +12,12 @@ resource "aws_flow_log" "main" {
   vpc_id          = var.vpc.id
   traffic_type    = "ALL"
 
-  tags = local.tags
+  tags = merge(
+    {
+      Name = var.name
+    },
+    local.tags
+  )
 }
 
 data "aws_iam_policy_document" "flow_logs_trust" {
@@ -27,13 +32,13 @@ data "aws_iam_policy_document" "flow_logs_trust" {
 }
 
 resource "aws_iam_role" "flow_logs" {
-  name = "${var.vpc.name}-${var.flow_log_name}"
+  name = "${substr(var.vpc.name, 0, 32)}-${substr(var.name, 0, 31)}"
 
   assume_role_policy = data.aws_iam_policy_document.flow_logs_trust.json
 
   tags = merge(
     {
-      Name = "${var.vpc.name}-${var.flow_log_name}"
+      Name = "${var.vpc.name}-${var.name}"
     },
     local.tags
   )
@@ -56,7 +61,7 @@ data "aws_iam_policy_document" "flow_logs" {
 }
 
 resource "aws_iam_role_policy" "flow_logs" {
-  name = "${var.vpc.name}-flow-logs"
+  name = "flow-logs"
   role = aws_iam_role.flow_logs.id
 
   policy = data.aws_iam_policy_document.flow_logs.json

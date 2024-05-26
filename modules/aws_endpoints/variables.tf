@@ -43,7 +43,7 @@ variable "aws_interface_vpc_endpoints" {
     The full list of available aws services can be found at:
     https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html
 
-    Example: ["ec2", "sns"]
+    Example: `["ec2", "sns"]`
   EOT
 
   type    = set(string)
@@ -175,7 +175,7 @@ locals {
   tags = merge(
     var.tags,
     {
-      TerraformModule = "dflook/vpc-network/aws//modules/aws-endpoints"
+      TerraformModule = "dflook/vpc-network/aws//modules/aws_endpoints"
     }
   )
 }

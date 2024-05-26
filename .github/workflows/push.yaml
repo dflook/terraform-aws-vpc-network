@@ -1,0 +1,24 @@
+name: Push
+
+on: [push]
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          curl https://mise.run | sh
+          ~/.local/bin/mise install
+
+      - name: Lint
+        run: |
+          mise task run fmt:terraform --check
+          mise task run generate:example-readme --check
+          mise task run generate:module-readme --check
+          mise task run lint:tflint
+          mise task run lint:terraform-validate

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# mise description="Validate Terraform modules
+# mise description="Validate Terraform modules"
 
 set -euo pipefail
 
