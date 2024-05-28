@@ -1,8 +1,19 @@
-# VPC flow logs modules
+# VPC Flow Logs Module
 
 This module configures flow logs for a vpc that go to a cloudwatch log group.
 
-The log group will be created, but not deleted when the group is destroyed.
+## Usage
+
+```hcl
+module "flow_logs" {
+  source  = "dflook/vpc-network/aws//modules/cloudwatch_flow_logs"
+  version = "1.0.0"
+
+  vpc               = module.vpc.vpc
+  retention_in_days = 7
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -78,3 +89,7 @@ Type: `map(string)`
 
 Default: `{}`
 <!-- END_TF_DOCS -->
+
+## Examples
+
+For examples see the [examples](https://github.com/dflook/terraform-aws-vpc-network/tree/main/examples) directory.

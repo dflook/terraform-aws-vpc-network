@@ -8,12 +8,15 @@ Route tables for the specified private subnets are updated to route traffic thro
 
 ```hcl
 module "nat_gateway" {
-  source = "github.com/dflook/terraform-aws-vpc//modules/nat_gateway?ref=1.0.0"
+  for_each = toset(local.availability_zones)
 
-  vpc            = module.vpc.vpc
-  public_subnet  = module.public_subnet["a"].subnet
+  source  = "dflook/vpc-network/aws//modules/nat_gateway"
+  version = "1.0.0"
+
+  vpc           = module.vpc.vpc
+  public_subnet = module.public_subnets.subnets[each.key]
   private_subnets = [
-    module.private_subnet["a"].subnet,
+    module.private_subnets.subnets[each.key]
   ]
 }
 ```
@@ -233,3 +236,7 @@ module "nat_gateway" {
   private_subnets = module.private_subnet.subnets
 }
 ```
+
+## Examples
+
+For examples see the [examples](https://github.com/dflook/terraform-aws-vpc-network/tree/main/examples) directory.

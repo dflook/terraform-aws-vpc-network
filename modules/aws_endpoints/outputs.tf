@@ -23,7 +23,7 @@ output "subnets" {
 
     Type:
     ```hcl
-    object({
+    map(object({
       id                     = string
       availability_zone      = string
       availability_zone_id   = string
@@ -32,7 +32,7 @@ output "subnets" {
       network_acl_id         = string
       route_table_id         = string
       name                   = string
-    })
+    }))
     ```
 
     Example:

@@ -25,7 +25,7 @@ variable "cidr_block" {
 
     The block will be split into equal parts for each availability zone.
 
-    Example: "10.0.0.0/28"
+    Example: `"10.0.0.0/28"`
   EOT
 
   type = string

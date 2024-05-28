@@ -4,7 +4,7 @@ output "subnets" {
 
     Type:
     ```hcl
-    object({
+    map(object({
       id                     = string
       availability_zone      = string
       availability_zone_id   = string
@@ -13,7 +13,7 @@ output "subnets" {
       network_acl_id         = string
       route_table_id         = string
       name                   = string
-    })
+    }))
     ```
 
     Example:
@@ -98,10 +98,10 @@ output "network_acl_id" {
   description = <<-EOT
     The ID of the network ACL.
 
-    Type: string
+    Type: `string`
 
     Example: `"acl-12345678"`
-EOT
+  EOT
 
   value = aws_network_acl.subnet.id
 
