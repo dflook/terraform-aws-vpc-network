@@ -45,4 +45,26 @@ run "empty_name" {
   ]
 }
 
+run "long_name_ok" {
+
+  command = plan
+
+  variables {
+    name = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" # 120 Characters
+  }
+}
+
+run "long_name_bad_no_good" {
+
+  command = plan
+
+  variables {
+    name = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" # 121 Characters
+  }
+
+  expect_failures = [
+    var.name
+  ]
+}
+
 # endregion

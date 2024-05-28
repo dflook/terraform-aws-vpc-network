@@ -6,6 +6,22 @@ Each subnet in the set has a unique part of the cidr block specified in the `cid
 Each subnet has a unique route table.
 There is one network acl used by all the subnets.
 
+## Usage
+
+```hcl
+module "my_subnets" {
+  source  = "dflook/vpc-network/aws//modules/subnets"
+  version = "1.0.0"
+
+  vpc = module.my_vpc.vpc
+
+  name       = "public"
+  cidr_block = "10.0.0.0/20"
+
+  availability_zones = ["a", "b"]
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -116,7 +132,7 @@ Description: A map of availability zone index to structured subnet information.
 
 Type:
 ```hcl
-object({
+map(object({
   id                     = string
   availability_zone      = string
   availability_zone_id   = string
@@ -125,7 +141,7 @@ object({
   network_acl_id         = string
   route_table_id         = string
   name                   = string
-})
+}))
 ```
 
 Example:
@@ -148,7 +164,11 @@ Example:
 
 Description: The ID of the network ACL.
 
-Type: string
+Type: `string`
 
 Example: `"acl-12345678"`
 <!-- END_TF_DOCS -->
+
+## Examples
+
+For examples see the [examples](https://github.com/dflook/terraform-aws-vpc-network/tree/main/examples) directory.

@@ -61,7 +61,7 @@ output "public_subnets" {
 
     Type:
     ```hcl
-    object({
+    map(object({
       id                     = string
       availability_zone      = string
       availability_zone_id   = string
@@ -70,7 +70,7 @@ output "public_subnets" {
       network_acl_id         = string
       route_table_id         = string
       name                   = string
-    })
+    }))
     ```
 
     Example:
@@ -109,7 +109,7 @@ output "private_subnets" {
 
     Type:
     ```hcl
-    object({
+    map(object({
       id                     = string
       availability_zone      = string
       availability_zone_id   = string
@@ -118,7 +118,7 @@ output "private_subnets" {
       network_acl_id         = string
       route_table_id         = string
       name                   = string
-    })
+    }))
     ```
 
     Example:
@@ -154,7 +154,7 @@ output "aws_interface_endpoint_sg" {
 
     This can be referenced in security group rules to allow access to the VPC Interface Endpoints for the AWS services specified in the `aws_interface_vpc_endpoints` variable.
 
-    Type: string
+    Type: `string`
 
     Example: `"sg-0123456789abcdef0"`
   EOT

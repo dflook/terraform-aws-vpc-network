@@ -5,12 +5,12 @@ This collection of modules is used to create and manage AWS VPCs.
 The modules are designed to be composable, allowing you to use them together in different combinations to create different infrastructure setups.
 
 This collection includes the following modules:
-- [VPC](./modules/vpc)
-- [Subnets](./modules/subnets)
-- [Internet Gateway](./modules/internet_gateway)
-- [NAT Gateway](./modules/nat_gateway)
-- [CloudWatch Flow Logs](./modules/cloudwatch_flow_logs)
-- [AWS Endpoint Subnets](./modules/aws_endpoints)
+- [VPC](https://registry.terraform.io/modules/dflook/vpc-network/aws/latest/submodules/vpc)
+- [Subnets](https://registry.terraform.io/modules/dflook/vpc-network/aws/latest/submodules/subnets)
+- [Internet Gateway](https://registry.terraform.io/modules/dflook/vpc-network/aws/latest/submodules/internet_gateway)
+- [NAT Gateway](https://registry.terraform.io/modules/dflook/vpc-network/aws/latest/submodules/nat_gateway)
+- [CloudWatch Flow Logs](https://registry.terraform.io/modules/dflook/vpc-network/aws/latest/submodules/cloudwatch_flow_logs)
+- [AWS Endpoint Subnets](https://registry.terraform.io/modules/dflook/vpc-network/aws/latest/submodules/aws_endpoints)
 
 This parent module can be used to create a generic VPC.
 If this doesn't meet your requirements, you can use it as an example to create your own VPC module using the individual submodules.
@@ -52,8 +52,6 @@ The following input variables are optional (have default values):
 
 Description: The name of the VPC. Must be unique within the AWS account.
 
-Example: `"my-vpc"`
-
 Type: `string`
 
 Default: `"vpc"`
@@ -73,7 +71,7 @@ Description: A list of AWS services to create AWS VPC Interface Endpoints for.
 The full list of available aws services can be found at:  
 https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html
 
-Example: ["ec2", "sns"]
+Example: `["ec2", "sns"]`
 
 Type: `set(string)`
 
@@ -125,7 +123,7 @@ This is a map of availability zone index to subnet information.
 
 Type:
 ```hcl
-object({
+map(object({
   id                     = string
   availability_zone      = string
   availability_zone_id   = string
@@ -134,7 +132,7 @@ object({
   network_acl_id         = string
   route_table_id         = string
   name                   = string
-})
+}))
 ```
 
 Example:
@@ -161,7 +159,7 @@ This is a map of availability zone index to subnet information.
 
 Type:
 ```hcl
-object({
+map(object({
   id                     = string
   availability_zone      = string
   availability_zone_id   = string
@@ -170,7 +168,7 @@ object({
   network_acl_id         = string
   route_table_id         = string
   name                   = string
-})
+}))
 ```
 
 Example:
@@ -195,7 +193,11 @@ Description: The security group ID of the interface endpoints.
 
 This can be referenced in security group rules to allow access to the VPC Interface Endpoints for the AWS services specified in the `aws_interface_vpc_endpoints` variable.
 
-Type: string
+Type: `string`
 
 Example: `"sg-0123456789abcdef0"`
 <!-- END_TF_DOCS -->
+
+## Examples
+
+For examples see the [examples](https://github.com/dflook/terraform-aws-vpc-network/tree/main/examples) directory.

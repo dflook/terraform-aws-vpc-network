@@ -1,3 +1,19 @@
+# Internet Gateway Module
+
+This module creates an internet gateway and adds a route to it in the route tables of the specified subnets.
+
+## Usage
+
+```hcl
+module "internet_gateway" {
+  source  = "dflook/vpc-network/aws//modules/internet_gateway"
+  version = "1.0.0"
+
+  vpc            = module.vpc.vpc
+  public_subnets = module.public_subnets.subnets
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -88,3 +104,7 @@ Description: The ID of the internet gateway
 
 Example: `"igw-12345678"`
 <!-- END_TF_DOCS -->
+
+## Examples
+
+For examples see the [examples](https://github.com/dflook/terraform-aws-vpc-network/tree/main/examples) directory.

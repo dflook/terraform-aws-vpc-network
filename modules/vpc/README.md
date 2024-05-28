@@ -9,10 +9,11 @@ They are intentionally kept empty and unusable.
 
 ```hcl
 module "vpc" {
-  source = "github.com/dflook/terraform-aws-vpc//modules/vpc?ref=1.0.0"
+  source  = "dflook/vpc-network/aws//modules/vpc"
+  version = "1.0.0"
 
   name       = "my-vpc"
-  cidr_block = "10.145.0.0/16"
+  cidr_block = "10.0.0.0/16"
 }
 ```
 
@@ -128,3 +129,7 @@ Example:
 }
 ```
 <!-- END_TF_DOCS -->
+
+## Examples
+
+For examples see the [examples](https://github.com/dflook/terraform-aws-vpc-network/tree/main/examples) directory.

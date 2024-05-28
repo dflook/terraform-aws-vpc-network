@@ -1,8 +1,6 @@
 variable "name" {
   description = <<-EOT
     The name of the VPC. Must be unique within the AWS account.
-
-    Example: `"my-vpc"`
   EOT
 
   type    = string
@@ -40,7 +38,7 @@ variable "aws_interface_vpc_endpoints" {
     The full list of available aws services can be found at:
     https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html
 
-    Example: ["ec2", "sns"]
+    Example: `["ec2", "sns"]`
   EOT
 
   type    = set(string)

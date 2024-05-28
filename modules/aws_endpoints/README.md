@@ -1,4 +1,4 @@
-# AWS Endpoints Modules
+# AWS Endpoints Module
 
 This add AWS service endpoints to a VPC.
 
@@ -6,6 +6,26 @@ Gateway VPC Endpoints for S3 and DynamoDB are always created. Use the `routed_su
 
 Interface endpoints are created for the services specified in the `aws_services` variable.
 Allow access from source security groups by adding a rule to the security group in the `security_group_id` output.
+
+## Usage
+
+```hcl
+module "aws_endpoints" {
+  source  = "dflook/vpc-network/aws//modules/aws_endpoints"
+  version = "1.0.0"
+
+  cidr_block         = local.aws_endpoints_cidr_block
+  vpc                = module.vpc.vpc
+  availability_zones = local.availability_zones
+
+  routed_subnets = concat(
+    values(module.public_subnets.subnets),
+    values(module.private_subnets.subnets)
+  )
+
+  aws_interface_vpc_endpoints = ["ec2", "sqs"]
+}
+```
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -41,7 +61,7 @@ Description: The CIDR block to create the subnets in.
 
 The block will be split into equal parts for each availability zone.
 
-Example: "10.0.0.0/28"
+Example: `"10.0.0.0/28"`
 
 Type: `string`
 
@@ -101,7 +121,7 @@ Description: A list of AWS services to create AWS VPC Interface Endpoints for.
 The full list of available aws services can be found at:  
 https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html
 
-Example: ["ec2", "sns"]
+Example: `["ec2", "sns"]`
 
 Type: `set(string)`
 
@@ -162,7 +182,7 @@ Description: A map of availability zone to structured subnet information.
 
 Type:
 ```hcl
-object({
+map(object({
   id                     = string
   availability_zone      = string
   availability_zone_id   = string
@@ -171,7 +191,7 @@ object({
   network_acl_id         = string
   route_table_id         = string
   name                   = string
-})
+}))
 ```
 
 Example:
@@ -190,3 +210,7 @@ Example:
 }
 ```
 <!-- END_TF_DOCS -->
+
+## Examples
+
+For examples see the [examples](https://github.com/dflook/terraform-aws-vpc-network/tree/main/examples) directory.

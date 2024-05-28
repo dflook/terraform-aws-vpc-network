@@ -87,10 +87,6 @@ variable "private_subnets" {
       {
         id                     = "subnet-12345678"
         availability_zone      = "a"
-        availability_zone_id   = "usw2-az1"
-        availability_zone_name = "us-west-2a"
-        cidr_block             = "10.145.0.0/16"
-        network_acl_id         = "acl-12345678"
         route_table_id         = "rtb-12345678"
         name                   = "subnet-a"
       }
@@ -135,7 +131,7 @@ variable "private_subnets" {
 
   validation {
     condition = alltrue([
-      for subnet in var.private_subnets : length(subnet.name) <= 120
+      for subnet in var.private_subnets : length(subnet.name) <= 255
     ])
     error_message = "Name must not be longer than 120 characters."
   }
@@ -151,7 +147,7 @@ locals {
   tags = merge(
     var.tags,
     {
-      TerraformModule = "dflook/vpc-network/aws//modules/nat-gateway"
+      TerraformModule = "dflook/vpc-network/aws//modules/nat_gateway"
     }
   )
 }
