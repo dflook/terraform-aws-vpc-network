@@ -15,4 +15,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `cloudwatch-flow-logs`
   - `aws_endpoint_subnets`
 
-[1.0.0]: https://github.com/dflook/terraform-aws-vpc-network/tree/1.0.0
+[1.0.0]: https://github.com/dflook/terraform-aws-vpc-network/tree/v1.0.0
