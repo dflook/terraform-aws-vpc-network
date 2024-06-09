@@ -24,7 +24,7 @@ The following requirements are needed by this module:
 
 - terraform (>=1.3.2)
 
-- aws (>=4.0)
+- aws (>=4.35)
 
 ## Resources
 

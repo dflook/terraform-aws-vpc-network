@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   
 ### Changed
 
-- The `vpc` module now enables Network Address Usage metrics.
+- The `vpc` module now enables Network Address Usage metrics. This also means that the minimum AWS provider version for this module is now 4.35.0.
 
 ## [1.0.0] - 2024-05-28
 ### Added

@@ -3,8 +3,6 @@
 
 set -eo pipefail
 
-AWS_PROVIDER_OLDEST="4.0.0"
-
 function restore() {
   for file in $(find . -name "*.bak"); do
     mv $file $(echo $file | sed 's/.bak//g')
@@ -13,17 +11,17 @@ function restore() {
 
 trap restore EXIT
 
-function set_aws_provider() {
+function set_oldest_aws_provider() {
   # We need to rewrite the aws provider version constraint in every module
 
-  local version=$1
-
   for file in $(find $path -name "terraform.tf"); do
-    sed -i.bak "s|  version = \".*|  version = \"$version\"|g" $file
+    sed -E -i.bak "s|  version = \">=(.*)\"|  version = \"\1\"|g" $file
   done
 }
 
-set_aws_provider $AWS_PROVIDER_OLDEST
+terraform -version
+
+set_oldest_aws_provider
 
 function test_module() {
   local module=$1
