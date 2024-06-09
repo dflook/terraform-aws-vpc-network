@@ -29,7 +29,7 @@ The following requirements are needed by this module:
 
 - terraform (>=1.3.2)
 
-- aws (>=4.0.0)
+- aws (>=4.0)
 
 ## Resources
 
@@ -155,7 +155,7 @@ Example:
     cidr_block             = "10.145.0.0/16"
     network_acl_id         = "acl-12345678"
     route_table_id         = "rtb-12345678"
-    name                   = "subnet-a"
+    name                   = "my-vpc_subnet_a"
   }
 }
 ```

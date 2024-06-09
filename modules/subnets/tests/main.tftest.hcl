@@ -42,6 +42,11 @@ run "create_subnet_a" {
   }
 
   assert {
+    condition     = output.subnets["a"].name == "my-vpc_test_a"
+    error_message = "subnets[a].name output is not correct."
+  }
+
+  assert {
     condition     = output.subnets["a"].cidr_block == "10.145.0.0/20"
     error_message = "subnets[a].cidr_block output is not correct."
   }
@@ -78,6 +83,16 @@ run "add_zone_b" {
   assert {
     condition     = run.create_subnet_a.subnets["a"].id == output.subnets["a"].id
     error_message = "Subnet a was recreated."
+  }
+
+  assert {
+    condition     = output.subnets["a"].name == "my-vpc_test_a"
+    error_message = "subnets[a].name output is not correct."
+  }
+
+  assert {
+    condition     = output.subnets["b"].name == "my-vpc_test_b"
+    error_message = "subnets[b].name output is not correct."
   }
 
   assert {

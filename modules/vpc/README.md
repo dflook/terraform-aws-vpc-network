@@ -34,6 +34,7 @@ The following resources are used by this module:
 - [aws_default_route_table.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table) (resource)
 - [aws_default_security_group.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group) (resource)
 - [aws_vpc.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) (resource)
+- [aws_vpc_ipv4_cidr_block_association.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_ipv4_cidr_block_association) (resource)
 
 ## Required Inputs
 
@@ -58,6 +59,16 @@ Type: `string`
 ## Optional Inputs
 
 The following input variables are optional (have default values):
+
+### secondary\_cidr\_blocks
+
+Description: Secondary CIDR blocks for the VPC.
+
+Example: `["192.168.1.0/24"]`
+
+Type: `list(string)`
+
+Default: `[]`
 
 ### tags
 
@@ -103,6 +114,14 @@ Type: `string`
 
 Example: `"10.0.0.0/16"`
 
+### secondary\_cidr\_blocks
+
+Description: Secondary CIDR blocks for the VPC.
+
+Type: `list(string)`
+
+Example: `["192.168.1.0/24"]`
+
 ### vpc
 
 Description: Structured information about the VPC.
@@ -111,10 +130,11 @@ Type:
 
 ```hcl
 object({
-    id          = string,
-    name        = string,
-    cidr_block  = string,
-    region_name = string
+    id                    = string
+    name                  = string
+    cidr_block            = string
+    secondary_cidr_blocks = list(string)
+    region_name           = string
 })
 ```
 
@@ -122,10 +142,11 @@ Example:
 
 ```hcl
 {
-    id          = "vpc-123456"
-    name        = "my-vpc",
-    cidr_block  = "10.0.0.0/16",
-    region_name = "us-west-2"
+    id                    = "vpc-123456"
+    name                  = "my-vpc"
+    cidr_block            = "10.0.0.0/16"
+    secondary_cidr_blocks = ["192.168.0.0/24"]
+    region_name           = "us-west-2"
 }
 ```
 <!-- END_TF_DOCS -->

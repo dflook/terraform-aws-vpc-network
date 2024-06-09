@@ -9,7 +9,7 @@ variables {
   tags       = {}
 }
 
-run "check_outputs" {
+run "create_vpc" {
   command = apply
 
   assert {
@@ -28,11 +28,124 @@ run "check_outputs" {
   }
 
   assert {
+    condition     = length(output.vpc.secondary_cidr_blocks) == 0
+    error_message = "secondary_cidr_blocks output is not correct."
+  }
+
+  assert {
+    condition     = output.vpc.secondary_cidr_blocks == compact([""])
+    error_message = "secondary_cidr_blocks output is not correct."
+  }
+
+  assert {
     condition = output.vpc == {
-      id          = output.id
-      name        = output.name
-      cidr_block  = output.cidr_block
-      region_name = "eu-west-2"
+      id                    = output.id
+      name                  = output.name
+      cidr_block            = output.cidr_block
+      secondary_cidr_blocks = compact([""])
+      region_name           = "eu-west-2"
+    }
+    error_message = "vpc output is not correct."
+  }
+}
+
+run "add_secondary_cidr_blocks" {
+  command = apply
+
+  variables {
+    secondary_cidr_blocks = ["10.1.0.0/24"]
+  }
+
+  assert {
+    condition     = output.name == var.name
+    error_message = "name output is not correct."
+  }
+
+  assert {
+    condition     = output.id == run.create_vpc.id
+    error_message = "vpc id has changed."
+  }
+
+  assert {
+    condition     = output.cidr_block == var.cidr_block
+    error_message = "cidr_block output is not correct."
+  }
+
+  assert {
+    condition = output.vpc == {
+      id                    = output.id
+      name                  = output.name
+      cidr_block            = output.cidr_block
+      secondary_cidr_blocks = var.secondary_cidr_blocks
+      region_name           = "eu-west-2"
+    }
+    error_message = "vpc output is not correct."
+  }
+}
+
+run "add_another_secondary_cidr_block" {
+  command = apply
+
+  variables {
+    secondary_cidr_blocks = ["10.1.0.0/24", "10.2.0.0/24"]
+  }
+
+  assert {
+    condition     = output.name == var.name
+    error_message = "name output is not correct."
+  }
+
+  assert {
+    condition     = output.id == run.create_vpc.id
+    error_message = "vpc id has changed."
+  }
+
+  assert {
+    condition     = output.cidr_block == var.cidr_block
+    error_message = "cidr_block output is not correct."
+  }
+
+  assert {
+    condition = output.vpc == {
+      id                    = output.id
+      name                  = output.name
+      cidr_block            = output.cidr_block
+      secondary_cidr_blocks = var.secondary_cidr_blocks
+      region_name           = "eu-west-2"
+    }
+    error_message = "vpc output is not correct."
+  }
+}
+
+run "remove_secondary_cidr_block" {
+  command = apply
+
+  variables {
+    secondary_cidr_blocks = ["10.2.0.0/24"]
+  }
+
+  assert {
+    condition     = output.name == var.name
+    error_message = "name output is not correct."
+  }
+
+  assert {
+    condition     = output.id == run.create_vpc.id
+    error_message = "vpc id has changed."
+  }
+
+  assert {
+    condition     = output.cidr_block == var.cidr_block
+    error_message = "cidr_block output is not correct."
+  }
+
+  assert {
+    condition = output.vpc == {
+      id                    = output.id
+      name                  = output.name
+      cidr_block            = output.cidr_block
+      secondary_cidr_blocks = var.secondary_cidr_blocks
+      region_name           = "eu-west-2"
     }
     error_message = "vpc output is not correct."
   }

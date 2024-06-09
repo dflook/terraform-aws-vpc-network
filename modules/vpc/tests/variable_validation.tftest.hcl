@@ -30,6 +30,50 @@ run "invalid_cidr_block" {
 
 # endregion
 
+# region secondary_cidr_blocks
+
+run "invalid_secondary_cidr_block" {
+
+  command = plan
+
+  variables {
+    secondary_cidr_blocks = ["10.145.0.0"]
+  }
+
+  expect_failures = [
+    var.secondary_cidr_blocks
+  ]
+}
+
+run "invalid_list_secondary_cidr_block" {
+
+  command = plan
+
+  variables {
+    secondary_cidr_blocks = ["10.145.1.0/24", "10.145.2.0", "10.145.3.0/24"]
+  }
+
+  expect_failures = [
+    var.secondary_cidr_blocks
+  ]
+}
+
+run "duplicate_secondary_cidr_block" {
+
+  command = plan
+
+  variables {
+    secondary_cidr_blocks = ["10.145.1.0/24", "10.145.1.0/24"]
+  }
+
+  expect_failures = [
+    var.secondary_cidr_blocks
+  ]
+}
+
+
+# endregion
+
 # region name
 
 run "empty_name" {

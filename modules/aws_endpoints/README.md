@@ -82,10 +82,11 @@ Typically this is the `vpc` output of the `vpc` module.
 Example:
 ```
 {
-  id          = "vpc-1234567890abcdef0"
-  name        = "my-vpc"
-  cidr_block  = "10.145.0.0/16"
-  region_name = "us-west-2"
+  id                    = "vpc-1234567890abcdef0"
+  name                  = "my-vpc"
+  cidr_block            = "10.145.0.0/16"
+  secondary_cidr_blocks = ["192.168.0.1/24"]
+  region_name           = "us-west-2"
 }
 ```
 
@@ -93,10 +94,11 @@ Type:
 
 ```hcl
 object({
-    id          = string
-    name        = string
-    cidr_block  = string
-    region_name = string
+    id                    = string
+    name                  = string
+    cidr_block            = string
+    secondary_cidr_blocks = optional(list(string), [])
+    region_name           = string
   })
 ```
 
