@@ -59,6 +59,29 @@ EOT
   }
 }
 
+output "secondary_cidr_blocks" {
+  description = <<-EOT
+    Secondary CIDR blocks for the VPC.
+
+    Type: `list(string)`
+
+    Example: `["192.168.1.0/24"]`
+  EOT
+
+
+  value = [for cidr_block in var.secondary_cidr_blocks : aws_vpc_ipv4_cidr_block_association.vpc[cidr_block].cidr_block]
+
+  precondition {
+    condition     = can(cidrhost(aws_vpc.vpc.cidr_block, 1))
+    error_message = "VPC CIDR block was not set correctly."
+  }
+
+  precondition {
+    condition     = var.cidr_block == aws_vpc.vpc.cidr_block
+    error_message = "VPC CIDR block was not set correctly."
+  }
+}
+
 output "vpc" {
   description = <<-EOT
     Structured information about the VPC.
@@ -67,10 +90,11 @@ output "vpc" {
 
     ```hcl
     object({
-        id          = string,
-        name        = string,
-        cidr_block  = string,
-        region_name = string
+        id                    = string
+        name                  = string
+        cidr_block            = string
+        secondary_cidr_blocks = list(string)
+        region_name           = string
     })
     ```
 
@@ -78,19 +102,21 @@ output "vpc" {
 
     ```hcl
     {
-        id          = "vpc-123456"
-        name        = "my-vpc",
-        cidr_block  = "10.0.0.0/16",
-        region_name = "us-west-2"
+        id                    = "vpc-123456"
+        name                  = "my-vpc"
+        cidr_block            = "10.0.0.0/16"
+        secondary_cidr_blocks = ["192.168.0.0/24"]
+        region_name           = "us-west-2"
     }
     ```
   EOT
 
   value = {
-    id          = aws_vpc.vpc.id
-    name        = aws_vpc.vpc.tags.Name
-    cidr_block  = aws_vpc.vpc.cidr_block
-    region_name = data.aws_region.current.name
+    id                    = aws_vpc.vpc.id
+    name                  = aws_vpc.vpc.tags.Name
+    cidr_block            = aws_vpc.vpc.cidr_block
+    secondary_cidr_blocks = compact(concat([for cidr_block in var.secondary_cidr_blocks : aws_vpc_ipv4_cidr_block_association.vpc[cidr_block].cidr_block], [""]))
+    region_name           = data.aws_region.current.name
   }
 
   precondition {

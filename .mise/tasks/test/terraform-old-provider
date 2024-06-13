@@ -3,7 +3,7 @@
 
 set -eo pipefail
 
-AWS_PROVIDER_OLDEST="4.0.0"
+AWS_PROVIDER_OLDEST="4.35.0"
 
 function restore() {
   for file in $(find . -name "*.bak"); do
@@ -24,6 +24,8 @@ function set_aws_provider() {
 }
 
 set_aws_provider $AWS_PROVIDER_OLDEST
+
+terraform -version
 
 function test_module() {
   local module=$1

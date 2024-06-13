@@ -25,6 +25,32 @@ resource "aws_network_acl" "aws_endpoints" {
     cidr_block = var.vpc.cidr_block
     action     = "allow"
   }
+
+  dynamic "ingress" {
+    for_each = zipmap(range(length(var.vpc.secondary_cidr_blocks)), var.vpc.secondary_cidr_blocks)
+
+    content {
+      rule_no    = 101 + ingress.key
+      protocol   = "tcp"
+      from_port  = 443
+      to_port    = 443
+      cidr_block = ingress.value
+      action     = "allow"
+    }
+  }
+
+  dynamic "egress" {
+    for_each = zipmap(range(length(var.vpc.secondary_cidr_blocks)), var.vpc.secondary_cidr_blocks)
+
+    content {
+      rule_no    = 101 + egress.key
+      protocol   = "tcp"
+      from_port  = 0
+      to_port    = 65535
+      cidr_block = egress.value
+      action     = "allow"
+    }
+  }
 }
 
 resource "aws_network_acl_association" "aws_endpoints" {
@@ -44,7 +70,7 @@ resource "aws_security_group" "vpc_endpoint" {
     to_port   = 443
     protocol  = "tcp"
 
-    cidr_blocks = [var.vpc.cidr_block]
+    cidr_blocks = concat([var.vpc.cidr_block], var.vpc.secondary_cidr_blocks)
   }
 
   tags = merge(

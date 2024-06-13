@@ -33,6 +33,28 @@ variable "cidr_block" {
   }
 }
 
+variable "secondary_cidr_blocks" {
+  description = <<-EOT
+    Secondary CIDR blocks for the VPC.
+
+    Example: `["192.168.1.0/24"]`
+  EOT
+
+  type = list(string)
+
+  default = []
+
+  validation {
+    condition     = alltrue([for cidr_block in var.secondary_cidr_blocks : can(cidrhost(cidr_block, 1))])
+    error_message = "Invalid CIDR block."
+  }
+
+  validation {
+    condition     = distinct(var.secondary_cidr_blocks) == var.secondary_cidr_blocks
+    error_message = "Secondary CIDR blocks must be unique."
+  }
+}
+
 variable "tags" {
   description = "A map of tags to apply to all resources."
   type        = map(string)
